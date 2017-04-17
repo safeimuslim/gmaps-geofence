@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="30px" viewBox="0 0 24 30" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>4AEEFD68-7339-4A2D-B6F1-C7E8E75D9566</title>
+    <desc>Created with sketchtool.</desc>
+    <defs>
+        <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+            <stop stop-color="#FFFFFF" stop-opacity="0.5" offset="0%"></stop>
+            <stop stop-color="#000000" stop-opacity="0.5" offset="100%"></stop>
+        </linearGradient>
+        <path d="M12,30 C12,30 24,22.627417 24,12 C24,5.372583 18.627417,0 12,0 C5.372583,0 3.47839072e-16,5.372583 0,12 C0,22.627417 12,30 12,30 Z" id="path-2"></path>
+        <mask id="mask-3" maskContentUnits="userSpaceOnUse" maskUnits="objectBoundingBox" x="0" y="0" width="24" height="30" fill="white">
+            <use xlink:href="#path-2"></use>
+        </mask>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Online-Monitor-1" transform="translate(-1193.000000, -471.000000)">
+            <g id="Cars" transform="translate(363.000000, 96.000000)">
+                <g id="Inner" transform="translate(53.000000, 45.000000)">
+                    <g id="Pin_AC" transform="translate(777.000000, 330.000000)">
+                        <g id="Oval-2">
+                            <use fill="#28A1DF" fill-rule="evenodd" xlink:href="#path-2"></use>
+                            <use fill-opacity="0.400000006" fill="url(#linearGradient-1)" fill-rule="evenodd" style="mix-blend-mode: soft-light;" xlink:href="#path-2"></use>
+                            <use stroke-opacity="0.2" stroke="#000000" mask="url(#mask-3)" stroke-width="4" xlink:href="#path-2"></use>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
