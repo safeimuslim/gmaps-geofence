@@ -78,6 +78,7 @@ class App extends Component {
       coordinates = [];
       paths.map((location) =>{
           coordinates.push({"lat": location[1], "lng": location[0]});
+          return true;
       });
     }
 
