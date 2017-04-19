@@ -4,6 +4,7 @@ import {AsyncTypeahead} from 'react-bootstrap-typeahead';
 import _ from 'lodash';
 
 let map;
+let bounds = new window.google.maps.LatLngBounds();
 let sub_area;
 let coordinates=[];
 let i = 0;
@@ -14,22 +15,10 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      allowNew: false,
-      multiple: false,
       options: [],
-      selected: [],
-      markers: [{
-        position: {
-          lat: 25.0112183,
-          lng: 121.52067570000001,
-        },
-        key: `Taiwan`,
-        defaultAnimation: 2,
-      }]
+      selected: []
     }
-    this._handleChange = this._handleChange.bind(this);
     this._handleSearch = this._handleSearch.bind(this);
-    this.handleMapLoad = this.handleMapLoad.bind(this);
     this.renderCoordinate = this.renderCoordinate.bind(this);
 
   }
@@ -49,35 +38,29 @@ class App extends Component {
     });
   }
 
-   handleMapLoad(map) {
-    this._mapComponent = map;
-    if (map) {
-      console.log(map.getZoom());
-    }
-  }
-
-   
-
-  _handleChange(e) {
-    const {checked, name} = e.target;
-    this.setState({[name]: checked});
-  }
-
   _handleSearch(query) {
     if (!query) {
       return;
     }
-    fetch(`http://nominatim.openstreetmap.org/search.php?q=${query}&polygon_geojson=1&format=json`)
+    fetch(`https://nominatim.openstreetmap.org/search.php?q=${query}&polygon_geojson=1&format=json`)
       .then(resp => resp.json())
-      .then(json => {
-        this.setState({options: json});
+      .then(data => {
+        let filterGeoJsonType = data.filter(function(data){
+          return data.geojson.type === "MultiPolygon" || data.geojson.type === "Polygon"
+        });
+        this.setState({options: filterGeoJsonType});
       });
   }
 
   renderCoordinate(paths){
       coordinates = [];
+      let position = 0;
       paths.map((location) =>{
-          coordinates.push({"lat": location[1], "lng": location[0]});
+          if(position %10 === 0){
+            coordinates.push({"lat": location[1], "lng": location[0]});
+            bounds.extend({"lat": location[1], "lng": location[0]});
+          }
+          position++
           return true;
       });
     }
@@ -101,21 +84,31 @@ class App extends Component {
           fillOpacity: 0.35,
           editable: true
         });
-        sub_area.setMap(map);  
+        
+        sub_area.setMap(map);
+        map.setOptions({ maxZoom: 15 });
+        map.fitBounds(bounds);
+
         coordinates = [];
       }
-      
+      i++;
     }
 
   render() {
     return (
       <div className="container" style={{height: `100%`}}>
         <div className="page-header">
-            <h1>Google Maps Area Geofencing - React JS Example</h1>
+            <h1>Area Geofencing on a Google Maps - React JS Example Projects</h1>
           </div>
-          <p className="lead">Pin a fixed-height footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added with <code>padding-top: 60px;</code> on the <code>body &gt; .container</code>.</p>
-          <p>Back to <a href="../sticky-footer">the default sticky footer</a> minus the navbar.</p>
-        
+          <p className="lead">
+            Welcome to the first series React JS Example Projects. This series explain how to create Area Geofencing on a Google Maps with React JS, hopefully we can learn together.
+            <br></br>
+            To create area geofencing we must find area boundaries and draw on google maps as polygon. During the writing of this series, area boundaries feature not available in the Google Maps API. 
+            The solution is using OpenStreetMap API for getting area boundaries <a href="#">more...</a>
+          </p>
+          <a href="https://www.youtube.com/watch?v=hLaRG0uZPWc" className="btn btn-primary">DEMO</a> &nbsp;
+          <a href="https://github.com/safeimuslim/gmaps-geofence" className="btn btn-primary">DOWNLOAD</a> &nbsp;
+          <br></br>&nbsp;
            <AsyncTypeahead
                 align="justify"
                 multiple
@@ -123,7 +116,7 @@ class App extends Component {
                 labelKey="display_name"
                 onSearch={_.debounce(this._handleSearch.bind(this), 2000)}
                 options={this.state.options}
-                placeholder="Search city..."
+                placeholder="Search city, ex: tomang or jakarta selatan..."
                 renderMenuItemChildren={(option, props, index) => (
                     <div onClick={this._onSelectOptions.bind(this, option)}>
                       <span>{option.display_name}</span>
@@ -133,7 +126,7 @@ class App extends Component {
               <div className="maps" id="map"></div>
 
               <footer className="footer">
-                <p>&copy; 2016 Company, Inc.</p>
+                <p>developed by <a href="https://github.com/safeimuslim">@safeimuslim</a></p>
               </footer>
       </div>
     );
