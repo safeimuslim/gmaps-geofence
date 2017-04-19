@@ -6,9 +6,9 @@ To create area geofencing we must find area boundaries and draw on google maps a
 
 ## :arrow_up: How to Setup
 
-**Step 1:** git clone this repo:
+**Step 1:** git clone this repo https://github.com/safeimuslim/gmaps-geofence.git
 
-**Step 2:** cd to the cloned repo:
+**Step 2:** cd to the cloned repo
 
 **Step 3:** Install the Application with `npm install`
 
