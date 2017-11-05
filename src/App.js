@@ -7,7 +7,6 @@ let map;
 let bounds = new window.google.maps.LatLngBounds();
 let sub_area;
 let coordinates=[];
-let i = 0;
 let color = ['#FF0000', '#4286f4','#ffff00','#ff00b2','#bb00ff','#00ffff','#26ff00','#00ff87'];
 
 class App extends Component {
@@ -16,7 +15,7 @@ class App extends Component {
     super(props);
     this.state = {
       options: [],
-      selected: []
+      selectedOptions: []
     }
     this._handleSearch = this._handleSearch.bind(this);
     this.renderCoordinate = this.renderCoordinate.bind(this);
@@ -24,6 +23,10 @@ class App extends Component {
   }
 
   componentDidMount(){
+    this._initMap()
+  }
+
+  _initMap () {
     map = new window.google.maps.Map(document.getElementById('map'),{
       center: {lat: -6.226996, lng: 106.819894},
       zoom: 10,
@@ -56,19 +59,21 @@ class App extends Component {
   }
 
   renderCoordinate(paths){
-      coordinates = [];
-      let position = 0;
-      paths.map((location) =>{
-          if(position %10 === 0){
-            coordinates.push({"lat": location[1], "lng": location[0]});
-            bounds.extend({"lat": location[1], "lng": location[0]});
-          }
-          position++
-          return true;
-      });
-    }
+    coordinates = [];
+    let position = 0;
+    paths.map((location) =>{
+        if(position %10 === 0){
+          coordinates.push({"lat": location[1], "lng": location[0]});
+          bounds.extend({"lat": location[1], "lng": location[0]});
+        }
+        position++
+        return true;
+    });
+  }
 
-  _onSelectOptions(option, event){
+  renderToMaps (selectedOptions) {
+    selectedOptions.forEach((option) => {
+      
       if(option.geojson.type === "MultiPolygon"){
         this.renderCoordinate(option.geojson.coordinates[0][0]);
       }else if(option.geojson.type === "Polygon"){
@@ -80,10 +85,10 @@ class App extends Component {
       if(coordinates.length > 1){
         sub_area = new window.google.maps.Polygon({
           paths: coordinates,
-          strokeColor: color[i],
+          strokeColor: color[1],
           strokeOpacity: 0.8,
           strokeWeight: 2,
-          fillColor: color[i],
+          fillColor: color[1],
           fillOpacity: 0.35,
           editable: true
         });
@@ -91,11 +96,16 @@ class App extends Component {
         sub_area.setMap(map);
         map.setOptions({ maxZoom: 15 });
         map.fitBounds(bounds);
-
+  
         coordinates = [];
       }
-      i++;
-    }
+    })
+  }
+
+  _handleChange (option) {
+    this._initMap()
+    this.renderToMaps(option)
+  }
 
   render() {
     return (
@@ -115,14 +125,14 @@ class App extends Component {
            <AsyncTypeahead
                 align="justify"
                 multiple
-                selected={this.state.selected}
                 labelKey="display_name"
                 onSearch={this._handleSearch.bind(this)}
+                onChange={this._handleChange.bind(this)}
                 options={this.state.options}
                 placeholder="Search city, ex: tomang or jakarta selatan..."
                 renderMenuItemChildren={(option, props, index) => (
-                    <div onClick={this._onSelectOptions.bind(this, option)}>
-                      <span>{option.display_name}</span>
+                  <div>
+                    <span>{option.display_name}</span>
                   </div>
                 )}/>
               
