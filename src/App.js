@@ -42,7 +42,9 @@ class App extends Component {
     if (!query) {
       return;
     }
-    fetch(`https://nominatim.openstreetmap.org/search.php?q=${query}&polygon_geojson=1&format=json`)
+    if (this.timeout) clearTimeout(this.timeout)
+    this.timeout = setTimeout(() => {
+      fetch(`https://nominatim.openstreetmap.org/search.php?q=${query}&polygon_geojson=1&format=json`)
       .then(resp => resp.json())
       .then(data => {
         let filterGeoJsonType = data.filter(function(data){
@@ -50,6 +52,7 @@ class App extends Component {
         });
         this.setState({options: filterGeoJsonType});
       });
+    }, 1000)
   }
 
   renderCoordinate(paths){
@@ -114,7 +117,7 @@ class App extends Component {
                 multiple
                 selected={this.state.selected}
                 labelKey="display_name"
-                onSearch={_.debounce(this._handleSearch.bind(this), 2000)}
+                onSearch={this._handleSearch.bind(this)}
                 options={this.state.options}
                 placeholder="Search city, ex: tomang or jakarta selatan..."
                 renderMenuItemChildren={(option, props, index) => (
